@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Популярные цитаты</title>
+</head>
+<body>
+    <h1>10 самых популярных цитат</h1>
+    
+    {% if quotes %}
+        <ol>
+        {% for quote in quotes %}
+            <li>
+                <blockquote>
+                    "{{ quote.text|linebreaks }}"
+                </blockquote>
+                <p><strong>Источник:</strong> {{ quote.source }}</p>
+                <p>👍 Лайков: {{ quote.likes }} | 👎 Дизлайков: {{ quote.dislikes }} </p>
+                <hr>
+            </li>
+        {% endfor %}
+        </ol>
+    {% else %}
+        <p>Пока нет цитат для отображения.</p>
+    {% endif %}
+    
+    <p><a href="{% url 'random_quote' %}">Вернуться к случайной цитате</a></p>
+    <p><a href="{% url 'add_quote' %}">Добавить новую цитату</a></p>
+</body>
+</html>

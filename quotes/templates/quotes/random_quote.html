@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Цитаты из книг и кинофильмов</title>
+</head>
+<body>
+    <h1>Случайная цитата</h1>
+
+    {% if quote %}
+        <blockquote>
+            "{{ quote.text|linebreaks }}"
+        </blockquote>
+        <p><strong>Источник:</strong> {{ quote.source }}</p>
+        
+        <div>
+            <p>Лайков: {{ quote.likes }} | Дизлайков: {{ quote.dislikes }}</p>
+        </div>
+        
+        <div>
+            <a href="{% url 'like_quote' quote.id %}">👍 Лайк</a>
+            <a href="{% url 'dislike_quote' quote.id %}">👎 Дизлайк</a>
+        </div>
+        
+    {% else %}
+        <p>Пока нет доступных цитат.</p>
+    {% endif %}
+
+    <br>
+    <p><a href="{% url 'add_quote' %}">Добавить новую цитату</a></p>
+    <p><a href="{% url 'popular_quotes' %}">Топ-10 популярных цитат</a></p>
+
+    <!-- Аутентификация -->
+    {% if user.is_authenticated %}
+        <p>Вы вошли как: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Войти</a></p>
+    {% endif %}
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'dashboard' %}">📊 Статистика администратора</a></p>
+    {% endif %}
+    <!-- Счетчик просмотров в самом конце -->
+    {% if quote %}
+        <hr>
+        <p><small>Обновлений страницы: {{ quote.views }}</small></p>
+    {% endif %}
+</body>
+</html>
