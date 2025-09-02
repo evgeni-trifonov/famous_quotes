@@ -6,6 +6,7 @@ from .forms import QuoteForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 
 
 def random_quote(request):
@@ -54,9 +55,13 @@ def add_quote(request):
 
 
 def popular_quotes(request):
-    # Берем 10 цитат с наибольшим количеством лайков
-    popular = Quote.objects.all().order_by('-likes')[:10]
+    # Берем 10 цитат с наибольшим рейтингом (лайки - дизлайки)
+    popular = Quote.objects.annotate(
+        net_rating=F('likes') - F('dislikes')
+    ).order_by('-net_rating', '-likes')[:10]
+    
     return render(request, 'quotes/popular_quotes.html', {'quotes': popular})
+
 
 @login_required
 def dashboard(request):
