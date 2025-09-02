@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Quote
+from .models import Quote, SiteStats
 
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
@@ -16,3 +16,8 @@ class QuoteAdmin(admin.ModelAdmin):
             'classes': ['collapse']  # Сворачиваемый блок
         }),
     ]
+
+@admin.register(SiteStats)
+class SiteStatsAdmin(admin.ModelAdmin):
+    list_display = ['total_views', 'last_updated']
+    readonly_fields = ['total_views', 'last_updated']

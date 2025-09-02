@@ -45,8 +45,7 @@
     <!-- Счетчик просмотров в самом конце -->
     {% if quote %}
         <hr>
-        <p><small>Обновлений страницы: {{ quote.views }}</small></p>
-    {% endif %}
-</body>
+        <p><small>Всего просмотров сайта: {{ total_views }}</small></p>
+{% endif %}</body>
 </html>
 {% endblock %}

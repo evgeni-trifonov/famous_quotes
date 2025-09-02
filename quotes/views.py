@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 import random
-from .models import Quote
+from .models import Quote, SiteStats
 from .forms import QuoteForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
@@ -61,11 +61,13 @@ def popular_quotes(request):
 @login_required
 def dashboard(request):
     # Общая статистика
+    stats = SiteStats.get_stats()
     total_quotes = Quote.objects.count()
     total_sources = Quote.objects.values('source').distinct().count()
     total_likes = Quote.objects.aggregate(Sum('likes'))['likes__sum'] or 0
     total_dislikes = Quote.objects.aggregate(Sum('dislikes'))['dislikes__sum'] or 0
-    total_views = Quote.objects.aggregate(Sum('views'))['views__sum'] or 0
+    # total_views = Quote.objects.aggregate(Sum('views'))['views__sum'] or 0
+    total_views = stats.total_views or 0
     
     # Самые популярные источники
     popular_sources = Quote.objects.values('source').annotate(
@@ -82,3 +84,25 @@ def dashboard(request):
         'popular_sources': popular_sources,
     }
     return render(request, 'quotes/dashboard.html', context)
+
+
+def random_quote(request):
+    # Увеличиваем общий счетчик просмотров
+    stats = SiteStats.get_stats()
+    stats.total_views += 1
+    stats.save()
+    
+    quotes = Quote.objects.all()
+    if not quotes:
+        return render(request, 'quotes/random_quote.html', {
+            'quote': None,
+            'total_views': stats.total_views
+        })
+    
+    weights = [quote.weight for quote in quotes]
+    chosen_quote = random.choices(quotes, weights=weights, k=1)[0]
+    
+    return render(request, 'quotes/random_quote.html', {
+        'quote': chosen_quote,
+        'total_views': stats.total_views
+    })
