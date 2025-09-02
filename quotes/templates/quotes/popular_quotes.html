@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Популярные цитаты | Цитаты из книг и кинофильмов{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +14,7 @@
         {% for quote in quotes %}
             <li>
                 <blockquote>
-                    "{{ quote.text|linebreaks }}"
+                    {{ quote.text|linebreaks }}
                 </blockquote>
                 <p><strong>Источник:</strong> {{ quote.source }}</p>
                 <p>👍 Лайков: {{ quote.likes }} | 👎 Дизлайков: {{ quote.dislikes }} </p>
@@ -27,3 +30,4 @@
     <p><a href="{% url 'add_quote' %}">Добавить новую цитату</a></p>
 </body>
 </html>
+{% endblock %}
