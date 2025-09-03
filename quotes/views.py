@@ -8,21 +8,29 @@ from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
 
+from .models import Quote, SiteStats
 
 def random_quote(request):
+    # Увеличиваем общий счетчик
+    stats = SiteStats.get_stats()
+    stats.total_views += 1
+    stats.save()
+    
+    # Остальной код без изменений
     quotes = Quote.objects.all()
     if not quotes:
-        return render(request, 'quotes/random_quote.html', {'quote': None})
-    
-    # Увеличиваем счетчик просмотров для каждой цитаты при показе
-    for quote in quotes:
-        quote.views += 1
-        quote.save()
+        return render(request, 'quotes/random_quote.html', {
+            'quote': None,
+            'total_views': stats.total_views
+        })
     
     weights = [quote.weight for quote in quotes]
     chosen_quote = random.choices(quotes, weights=weights, k=1)[0]
-    return render(request, 'quotes/random_quote.html', {'quote': chosen_quote})
-
+    
+    return render(request, 'quotes/random_quote.html', {
+        'quote': chosen_quote,
+        'total_views': stats.total_views
+    })
 
 def like_quote(request, quote_id):
     quote = get_object_or_404(Quote, id=quote_id)

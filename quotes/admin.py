@@ -20,4 +20,4 @@ class QuoteAdmin(admin.ModelAdmin):
 @admin.register(SiteStats)
 class SiteStatsAdmin(admin.ModelAdmin):
     list_display = ['total_views', 'last_updated']
-    readonly_fields = ['total_views', 'last_updated']
+    readonly_fields = ['total_views', 'last_updated']  # Защищаем от изменений
