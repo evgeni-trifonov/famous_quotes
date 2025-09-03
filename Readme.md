@@ -1,4 +1,3 @@
-```markdown
 # Famous Quotes App
 
 A Django web application that displays random quotes from movies and books with interactive features.
